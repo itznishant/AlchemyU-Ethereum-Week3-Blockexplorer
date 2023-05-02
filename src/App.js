@@ -1,6 +1,9 @@
 import { Alchemy, Network, Utils } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import TransactionViewer from './components/TransactionViewer';
+import LatestBlocks from './components/LatestBlocks';
 
 import './App.css';
 
@@ -17,13 +20,16 @@ const alchemy = new Alchemy(settings);
 
 function App() {
   // const [network, setNetwork] = useState("");
+  const [blocksData, setBlocksData] = useState([]);
   const [blockNumber, setBlockNumber] = useState();
   const [blockHashes, setBlockHashes] = useState([]);
   const [blockGasInfo, setBlockGasInfo] = useState([]);
-  const [latestBlocks, setLatestBlocks] = useState([]);
+  // const [latestBlock, setLatestBlock] = useState();
   const [networkGasPrice, setNetworkGasPrice] = useState("");
   const [topTransactions, setTopTransactions] = useState([]);
   const [totalTransactions, setTotalTransactions] = useState();
+  const [trxnHash, setTrxnHash] = useState("");
+  // const [transactionDetails, setTransactionDetails] = useState([])
 
   const displayBlockchainData = async () => {
       // const NETWORK = settings.network.toString().toUpperCase();
@@ -43,12 +49,36 @@ function App() {
       }
 
       //Latest blocks
+      const blockPromises = [];
       for (i = result.number; i > result.number-5;  i--) {
-        latestBlocks.push(i);
+        blockPromises.push(i);
       }
+
+      const blocks = await Promise.all(blockPromises);
+      const blockTimestamps = await Promise.all(blockPromises.map(async (blockNumber) => {
+          const block = await alchemy.core.getBlock(blockNumber);
+          return block.timestamp;
+      }));
+
+      const blocksData = blockTimestamps.map((timestamp, index) => ({
+          blockNumber: blocks[index],
+          timestamp
+      }));
+
+      // transactions in blocks
+      // const transactionDetails = await alchemy.core.getBlockWithTransactions(SOME_BLOCK_NUMBER)
+
+      // const txHash = result.transactions === ? "" : "";
+
+      //Call the method
+      let response = await alchemy.core.getTransactionReceipt(result.transactions[0])
+      const trxnHash = response.transactionHash.toString();
+
 
       //set react state values
       // setNetwork(NETWORK);
+      setTrxnHash(trxnHash);
+      setBlocksData(blocksData);
       setBlockGasInfo([parseInt(result.gasLimit), parseInt(result.gasUsed),parseInt(gasUsedPct),parseInt(gasTarget)]);
       setNetworkGasPrice(gasPrice.toString());
       setBlockHashes([result.hash, result.parentHash]);
@@ -58,21 +88,24 @@ function App() {
       setTopTransactions(topTransactions);
 
       setBlockNumber(parseInt(result.number));
-      setLatestBlocks(latestBlocks);
+      // setLatestBlocks(latestBlocks);
     }
 
   useEffect(() => {
     displayBlockchainData()
-  }, [latestBlocks, topTransactions])
+  }, [topTransactions])
 
 
   return (
+    <Router>
     <div className="App">
       <Navbar BLOCKEXPLORER DAPP/>
-    <br />
+      <br />
+      <br />
+      <TransactionViewer txID={trxnHash} />
     <br />
     <div>
-        <h2  className="chain__stats_left content-wrapper">Mainnet Stats</h2>      
+        <h2  className="chain__stats_left">Mainnet Stats</h2>      
           <ul className="chain__stats_left">
             <li>ETH PRICE: {blockNumber}</li>
             <li>GAS PRICE: {networkGasPrice.slice(0,5)} Gwei</li>
@@ -101,18 +134,22 @@ function App() {
             <strong>PARENT HASH:</strong> {blockHashes[1]}
             <br />
             <br />
-            <strong>TOP 10 TRANSACTIONS: </strong> {topTransactions.map( (txID, index) => <ul>{index+1}. {txID} </ul>)}
+            <strong>TOP 10 TRANSACTIONS: </strong> {topTransactions.map( (txID, index) => <ul>{index+1}. {txID} key={txID} </ul>)}
         </div>
 
       <div>
       <h2 className="chain__data_right">LATEST BLOCKS</h2>
-        <div className="chain__data_right">
-          {latestBlocks.map( (block) => <ul>BLOCK #:  {block}</ul>)}
-        </div>
+      <Switch>
+        <Route exact path="/">
+          <div className='chain__data_right'>
+            <LatestBlocks blocks={blocksData}/> 
+          </div>
+        </Route>
+      </Switch>
       </div>
     </div>
     </div>
-
+  </Router>
   );
 }
 
