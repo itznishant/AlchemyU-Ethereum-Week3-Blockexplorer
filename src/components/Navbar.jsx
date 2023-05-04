@@ -1,20 +1,26 @@
-import React, { Component, useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 
-class Navbar extends Component {
+function Navbar() {
+  const [ethPrice, setEthPrice] = useState("");
 
-  render() {
+  useEffect( () => {
+      async function getPrice() {
+          const URL = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd";
+          let req = await fetch(URL);
+          let response = await req.json();
+          let ethPrice = response.ethereum.usd;
+          setEthPrice(ethPrice);
+      }
+      getPrice();
+  }, []);
+
   return (
     <nav>
-      <div className="nav__network">
-        <small>NETWORK: {}</small>
-      </div>
-      
-      <div className="nav__title">
-        <h1>BLOCK EXPLORER</h1>
-      </div>
+      <div className="nav__topbar__left"> ETH PRICE: {ethPrice} USD</div>
+      <div className="nav__title"> <h2>BLOCK EXPLORER</h2> </div>
+      <div className="nav__topbar__right">NETWORK: ETH MAINNET</div>
     </nav>
   );
-  }
 }
 
 export default Navbar;
