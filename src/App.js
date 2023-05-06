@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { Alchemy, Network, Utils } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Search from './components/Search.jsx';
+import Search from './components/Search';
 import LatestBlocks from './components/LatestBlocks';
+import Blocks from './pages/Blocks';
+import Transactions from './pages/Transactions';
+import Errorpage from './pages/Errorpage';
 
 import './App.css';
 
@@ -24,7 +26,7 @@ const alchemy = new Alchemy(settings);
 function App() {
   // const [network, setNetwork] = useState("");
   const [supply, setSupply]= useState("");
-  const [blocksData, setBlocksData] = useState([]);
+  const [blocks, setBlocks] = useState([]);
   const [blockNumber, setBlockNumber] = useState();
   const [blockHashes, setBlockHashes] = useState([]);
   const [blockGasInfo, setBlockGasInfo] = useState([]);
@@ -35,21 +37,25 @@ function App() {
   // const [transactionDetails, setTransactionDetails] = useState([])
 
   const displayBlockchainData = async () => {
-      // const NETWORK = settings.network.toString().toUpperCase();
-      // console.log(NETWORK);
       //get block data
       const result = await alchemy.core.getBlock(blockNumber);
-      
+      setBlockNumber(parseInt(result.number));
+      setTotalTransactions(result.transactions.length);
+      setBlockHashes([result.hash, result.parentHash]);
+
       //gas price in gwei
       const gasPrice = await alchemy.core.getGasPrice().then( response => ((parseInt(Utils.parseUnits(response.toString(), 'wei'))) / 10**9) );
-      
+      setNetworkGasPrice(gasPrice.toString());
       const gasTarget = -1 * (parseInt((parseInt(result.gasLimit)/2) - parseInt(result.gasUsed)) / (parseInt(result.gasLimit)/2)) * 100;
       const gasUsedPct = (parseInt(result.gasUsed) / parseInt(result.gasLimit)) * 100;
 
-      // Transactions List 
-      for (var i = result.transactions.length-1; i >= result.transactions.length-10; i--) {
+      setBlockGasInfo([parseInt(result.gasLimit), parseInt(result.gasUsed),parseInt(gasUsedPct),parseInt(gasTarget)]);
+
+      // Transactions List
+      for (var i = result.transactions.length-1; i >= result.transactions.length-5; i--) {
         topTransactions.push(result.transactions[i]);
       }
+      setTopTransactions(topTransactions);
 
       //Latest blocks
       const blockPromises = [];
@@ -64,14 +70,15 @@ function App() {
       }));
 
       const blocksData = blockTimestamps.map((timestamp, index) => ({
-          blockNumber: blocks[index],
-          timestamp
+          blockNumber: blocks[index]
       }));
+
+      setBlocks(blocksData);
 
       // transactions in blocks
       // const transactionDetails = await alchemy.core.getBlockWithTransactions(SOME_BLOCK_NUMBER)
 
-      //ETH Data
+      //ETH Supply
       const BASE_URL = "https://api.etherscan.io/api";
       const REQ_PARAM = "ethsupply";
       const requestUrlSupply = `${BASE_URL}?module=stats&action=${REQ_PARAM}`;
@@ -82,20 +89,11 @@ function App() {
           resolve(setSupply(ethSupply));
         });
       });
-
-      //set react state values
-      // setNetwork(NETWORK);
-      setBlocksData(blocksData);
-      setBlockGasInfo([parseInt(result.gasLimit), parseInt(result.gasUsed),parseInt(gasUsedPct),parseInt(gasTarget)]);
-      setNetworkGasPrice(gasPrice.toString());
-      setBlockHashes([result.hash, result.parentHash]);
-      setTotalTransactions(result.transactions.length);
-      setTopTransactions(topTransactions);
-      setBlockNumber(parseInt(result.number));
-    }
-
+  }
   useEffect(() => {
-    displayBlockchainData()
+    if(topTransactions.length <= 5) {
+      displayBlockchainData()
+    }
   }, [topTransactions])
 
 
@@ -104,51 +102,56 @@ function App() {
     <div className="App">
       <Navbar />
       <br />
+      <Switch>
+      <Route exact path='/'>
       <div className='pt-14 flex justify-center'>
         <Search />
       </div>
       <br />
-    <div>
-        <h2  className="chain__stats_left">Mainnet Stats</h2>      
-          <ul className="chain__stats_left">
-            <li>GAS PRICE: {networkGasPrice.slice(0,5)} Gwei</li>
-            <li>TOTAL SUPPLY: {supply} ETH</li>
+      <div className="chain__header_container">
+        <div className="chain__stats_l">
+          <h2>Mainnet Stats</h2>      
+          <ul>
+            <li><strong>GAS PRICE: </strong>  {networkGasPrice.slice(0,5)} Gwei</li>
+            <li><strong>ETH SUPPLY: </strong> {supply}</li>
+            <li><strong>TOTAL BLOCKS: </strong> {blockNumber}</li>
+            <li><strong>GAS PRICE: </strong>  {networkGasPrice.slice(0,5)} Gwei</li>
           </ul>
-        <h2 className="chain__stats">Block Stats</h2>
-          <ul className="chain__stats">
-            <li>TOTAL BLOCKS: {blockNumber}</li>
-            <li>CURRENT BLOCK: {blockNumber}</li>
-            <li>TOTAL TRANSACTIONS: {totalTransactions}</li>
-            <li>GAS LIMIT: {blockGasInfo[0]}</li>
-            <li>GAS USED: {blockGasInfo[1]} ({blockGasInfo[2]}%)</li>
-            <li>GAS TARGET: {blockGasInfo[3]}%</li>
-          </ul>
-    </div>
-      <br />
-      <br />
-      <div>
-      <h2 className="chain__data">BLOCK DATA</h2>
-        <div className="chain__data">
-            <strong>BLOCK HASH:</strong> {blockHashes[0]}          
-            <br /><br />
-            <strong>PARENT HASH:</strong> {blockHashes[1]}
-            <br /><br />
-            <strong>Top TRANSACTIONS: </strong> {topTransactions.map( (txID, index) => <ul key={txID}><Link className="links" to={`/transaction/${txID}`}>{txID}</Link></ul>)}
         </div>
-
-      <div>
-      <h2 className="chain__data_right">LATEST BLOCKS</h2>
-      <Switch>
-        <Route exact path='/'>
-          <div className='chain__data_right'>
-            <LatestBlocks blocks={blocksData}/> 
-          </div>
-        </Route>
-      </Switch>
+        <div className="chain__stats_r">
+          <h2>Block Stats</h2>
+          <ul>
+            <li><strong>CURRENT BLOCK: </strong> {blockNumber}</li>
+            <li><strong>TOTAL TRANSACTIONS: </strong> {totalTransactions}</li>
+            <li><strong>GAS LIMIT: </strong> {blockGasInfo[0]}</li>
+            <li><strong>GAS USED: </strong> {blockGasInfo[1]} ({blockGasInfo[2]}%)</li>
+            <li><strong>GAS TARGET: </strong> {blockGasInfo[3]}%</li>
+          </ul>
+        </div>
       </div>
-    </div>
+      <div className="chain__data_container">
+        <div className="chain__data_l">
+          <h2>BLOCK DATA</h2>
+          <strong>TOP TRANSACTIONS: </strong> {topTransactions.map( (txID, index) => <ul key={txID}><Link className="App__link" to={`/transaction/${txID}`}>{txID}</Link></ul>)}
+        </div>
+        <div className='chain__data_r'>
+          <h2>LATEST BLOCKS</h2>
+          <LatestBlocks blocks={blocks} />
+        </div>
+      </div>
+      </Route>
+      <Route exact path='/block/:blockNumber'>
+        <Blocks blockNumber={blockNumber} blockHashes={blockHashes} />
+      </Route>
+      <Route exact path='/transaction/:topTransactions[0]'>
+        <Transactions transactionID={topTransactions} />
+      </Route>
+      <Route path="*">
+        <Errorpage />
+      </Route>
+      </Switch>
     <Footer />
-    </div>
+  </div>
   </Router>
   );
 }

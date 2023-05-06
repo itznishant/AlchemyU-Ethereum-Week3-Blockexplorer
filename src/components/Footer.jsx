@@ -6,7 +6,7 @@ function Footer() {
   return (
       <div className="footer">
           <footer>
-          <Link className="links" to={link}>{link}</Link>
+          <Link className="App__link" to={link}>{link}</Link>
           </footer>
       </div>
   )
