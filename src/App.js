@@ -9,6 +9,7 @@ import LatestBlocks from './components/LatestBlocks';
 import Blocks from './pages/Blocks';
 import Transactions from './pages/Transactions';
 import Errorpage from './pages/Errorpage';
+import Addresses from './pages/Addresses';
 
 import './App.css';
 
@@ -28,7 +29,6 @@ function App() {
   const [supply, setSupply]= useState("");
   const [blocks, setBlocks] = useState([]);
   const [blockNumber, setBlockNumber] = useState();
-  const [blockHashes, setBlockHashes] = useState([]);
   const [blockGasInfo, setBlockGasInfo] = useState([]);
   // const [latestBlock, setLatestBlock] = useState();
   const [networkGasPrice, setNetworkGasPrice] = useState("");
@@ -41,8 +41,7 @@ function App() {
       const result = await alchemy.core.getBlock(blockNumber);
       setBlockNumber(parseInt(result.number));
       setTotalTransactions(result.transactions.length);
-      setBlockHashes([result.hash, result.parentHash]);
-
+      
       //gas price in gwei
       const gasPrice = await alchemy.core.getGasPrice().then( response => ((parseInt(Utils.parseUnits(response.toString(), 'wei'))) / 10**9) );
       setNetworkGasPrice(gasPrice.toString());
@@ -107,7 +106,6 @@ function App() {
       <div className='pt-14 flex justify-center'>
         <Search />
       </div>
-      <br />
       <div className="chain__header_container">
         <div className="chain__stats_l">
           <h2>Mainnet Stats</h2>      
@@ -140,11 +138,14 @@ function App() {
         </div>
       </div>
       </Route>
-      <Route exact path='/block/:blockNumber'>
-        <Blocks blockNumber={blockNumber} blockHashes={blockHashes} />
+      <Route exact path="/block/:blocknumber">
+        <Blocks />
       </Route>
-      <Route exact path='/transaction/:topTransactions[0]'>
-        <Transactions transactionID={topTransactions} />
+      <Route exact path="/transaction/:transaction">
+        <Transactions />
+      </Route>
+      <Route exact path="/address/:address">
+        <Addresses />
       </Route>
       <Route path="*">
         <Errorpage />
