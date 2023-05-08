@@ -15,13 +15,12 @@ export const alchemy = new Alchemy(settings);
 export default function Addresses() {
     const {address} = useParams();
     const [ethBalance, setEthBalance] = useState();
-    const [balances, setBalances] = useState();
+    const [addrBalances, setAddrBalances] = useState([]);
 
     useEffect(() => {
         async function getBalances() {
             const ethBalance = await alchemy.core.getBalance(address, "latest");
-            const etherBalance =  Utils.formatEther(parseInt(ethBalance)).substring(0,6);
-
+            const etherBalance =  Utils.formatEther(ethBalance).substring(0, 6);
             const balances = await alchemy.core.getTokenBalances(address);
             const nonZeroBalances = balances.tokenBalances.filter((token) => {
                 return token.tokenBalance > 0;
@@ -48,10 +47,10 @@ export default function Addresses() {
             }
             
             setEthBalance(etherBalance);
-            setBalances(addressBalances);
+            setAddrBalances(addressBalances);
         };
         getBalances();
-    }, [balances, ethBalance]);
+    }, [addrBalances, ethBalance]);
 
     return (
         <div className="address">
@@ -60,7 +59,7 @@ export default function Addresses() {
                 <h2 className="address balance"> <strong>Balance: </strong> {ethBalance} ETH </h2>
             </div>
             <br />
-            {balances && balances.map((bal, i) => <ul key = {bal.id}><b>{bal.name} ({bal.symbol}): {bal.balance}</b></ul>)}
+            {addrBalances && addrBalances.map((bal, i) => <ul key = {bal.id}><b>{bal.name} ({bal.symbol}): {bal.balance}</b></ul>)}
         </div>
-        )
+    )
 }
