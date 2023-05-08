@@ -16,7 +16,6 @@ export default function Addresses() {
     const {address} = useParams();
     const [ethBalance, setEthBalance] = useState();
     const [balances, setBalances] = useState();
-    // const address = "0x043d7950020B10d58e680bbc20eAB294136fDDD8"
 
     useEffect(() => {
         async function getBalances() {
@@ -52,7 +51,7 @@ export default function Addresses() {
             setBalances(addressBalances);
         };
         getBalances();
-    }, [ethBalance]);
+    }, [balances, ethBalance]);
 
     return (
         <div className="address">

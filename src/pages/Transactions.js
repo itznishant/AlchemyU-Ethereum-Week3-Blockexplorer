@@ -16,7 +16,6 @@ export default function Transactions() {
   
   useEffect(() => {
         async function getTxDetails() {
-          console.log(transaction);
           // setBalances(addressBalances);
         };
     getTxDetails();

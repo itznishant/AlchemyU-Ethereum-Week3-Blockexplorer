@@ -16,25 +16,21 @@ import './App.css';
 // Refer to the README doc for more information about using API
 // keys in client-side code. You should never do this in production
 // level code.
-const settings = {
+export const settings = {
   apiKey: process.env.REACT_APP_ALCHEMY_API_KEY,
   network: Network.ETH_MAINNET,
 };
-
 // Alchemy SDK is an umbrella library with several different packages.
 const alchemy = new Alchemy(settings);
 
 function App() {
-  // const [network, setNetwork] = useState("");
   const [supply, setSupply]= useState("");
   const [blocks, setBlocks] = useState([]);
   const [blockNumber, setBlockNumber] = useState();
   const [blockGasInfo, setBlockGasInfo] = useState([]);
-  // const [latestBlock, setLatestBlock] = useState();
   const [networkGasPrice, setNetworkGasPrice] = useState("");
   const [topTransactions, setTopTransactions] = useState([]);
   const [totalTransactions, setTotalTransactions] = useState();
-  // const [transactionDetails, setTransactionDetails] = useState([])
 
   const displayBlockchainData = async () => {
       //get block data
@@ -50,13 +46,13 @@ function App() {
 
       setBlockGasInfo([parseInt(result.gasLimit), parseInt(result.gasUsed),parseInt(gasUsedPct),parseInt(gasTarget)]);
 
-      // Transactions List
+      //transactions List
       for (var i = result.transactions.length-1; i >= result.transactions.length-5; i--) {
         topTransactions.push(result.transactions[i]);
       }
       setTopTransactions(topTransactions);
 
-      //Latest blocks
+      //latest blocks
       const blockPromises = [];
       for (i = result.number; i > result.number-5;  i--) {
         blockPromises.push(i);
@@ -73,9 +69,6 @@ function App() {
       }));
 
       setBlocks(blocksData);
-
-      // transactions in blocks
-      // const transactionDetails = await alchemy.core.getBlockWithTransactions(SOME_BLOCK_NUMBER)
 
       //ETH Supply
       const BASE_URL = "https://api.etherscan.io/api";
@@ -110,17 +103,16 @@ function App() {
         <div className="chain__stats_l">
           <h2>Mainnet Stats</h2>      
           <ul>
-            <li><strong>GAS PRICE: </strong>  {networkGasPrice.slice(0,5)} Gwei</li>
-            <li><strong>ETH SUPPLY: </strong> {supply}</li>
-            <li><strong>TOTAL BLOCKS: </strong> {blockNumber}</li>
-            <li><strong>GAS PRICE: </strong>  {networkGasPrice.slice(0,5)} Gwei</li>
+            <li><strong>GAS PRICE: </strong>{networkGasPrice.slice(0,5)} Gwei</li>
+            <li><strong>ETH SUPPLY: </strong>{supply}</li>
+            <li><strong>TOTAL BLOCKS: </strong>{blockNumber}</li>
           </ul>
         </div>
         <div className="chain__stats_r">
           <h2>Block Stats</h2>
           <ul>
             <li><strong>CURRENT BLOCK: </strong> {blockNumber}</li>
-            <li><strong>TOTAL TRANSACTIONS: </strong> {totalTransactions}</li>
+            <li><strong>TOTAL TRANSACTIONS IN BLOCK: </strong> {totalTransactions}</li>
             <li><strong>GAS LIMIT: </strong> {blockGasInfo[0]}</li>
             <li><strong>GAS USED: </strong> {blockGasInfo[1]} ({blockGasInfo[2]}%)</li>
             <li><strong>GAS TARGET: </strong> {blockGasInfo[3]}%</li>
@@ -129,11 +121,11 @@ function App() {
       </div>
       <div className="chain__data_container">
         <div className="chain__data_l">
-          <h2>BLOCK DATA</h2>
-          <strong>TOP TRANSACTIONS: </strong> {topTransactions.map( (txID, index) => <ul key={txID}><Link className="App__link" to={`/transaction/${txID}`}>{txID}</Link></ul>)}
+          <h2>Top Transactions (Block)</h2>
+          {topTransactions.map( (txID, index) => <ul key={txID}><Link className="App__link" to={`/transaction/${txID}`}>{txID}</Link></ul>)}
         </div>
         <div className='chain__data_r'>
-          <h2>LATEST BLOCKS</h2>
+          <h2>Latest Blocks</h2>
           <LatestBlocks blocks={blocks} />
         </div>
       </div>

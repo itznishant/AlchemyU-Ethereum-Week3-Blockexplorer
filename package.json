@@ -1,5 +1,7 @@
 {
   "name": "Blockexplorer",
+  "description": "Blockexplorer D-APP",
+  "author": "Nishant Vemulakonda",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

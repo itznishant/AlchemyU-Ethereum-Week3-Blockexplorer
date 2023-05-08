@@ -27,7 +27,7 @@ function Search() {
         <input 
             className="search-box border-2 border-gray-300 rounded w-full"
             type="search"
-            placeholder='Type Tx hash or Wallet Address' 
+            placeholder="Type Transaction Hash or Wallet Address"
             onChange={handleChange}
             onKeyDown={handleKeyDown}
         />

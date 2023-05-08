@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'; 
+import { Network } from 'alchemy-sdk'; 
 
 function Navbar() {
   const [ethPrice, setEthPrice] = useState("");
+  const network = Network.ETH_MAINNET.toUpperCase();
 
   useEffect( () => {
       async function getPrice() {
@@ -16,9 +18,9 @@ function Navbar() {
 
   return (
     <nav>
-      <div className="nav__topbar__left"> ETH PRICE: {ethPrice} USD</div>
+      <div className="nav__topbar__left">ETH PRICE: {ethPrice} USD</div>
       <div className="nav__title"> <h2>BLOCK EXPLORER</h2> </div>
-      <div className="nav__topbar__right">NETWORK: ETH MAINNET</div>
+      <div className="nav__topbar__right">NETWORK: {network}</div>
     </nav>
   );
 }

@@ -7,7 +7,8 @@
   --clr-black:        #202020;
   --clr-almost-black: #222222;
   --clr-gray:         #c4c4c4;
-  --clr-gray-700:     #374151;
+  --bg-gray-700:      #374151;
+  --bg-gray-200:      #EDF2F7;
 }
 
 body {
@@ -38,31 +39,11 @@ h1 h2 h3 {
   }
 }
 
-/*.App__header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}*/
-
-/*.App__title {
-  background-color: darkorchid;
-  color: white;
-  text-align: center;
-  justify-content: center;
-  border: darkgray;
-  border-style: dotted;
-}*/
-
 .App__link {
   color: var(--clr-almost-black);
   font: bold;
   text-decoration: none;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   gap: 2em;
 }
 
@@ -173,7 +154,7 @@ nav {
 .chain__stats_r {
   display: grid;
   height: 90%;
-  border: 2px solid var(--clr-gray-700);
+  border: 2px solid var(--bg-gray-700);
   border-style: groove;
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -188,7 +169,7 @@ nav {
 .chain__stats_l {
   display: grid;
   height: 90%;
-  border: 2px solid var(--clr-gray-700);
+  border: 2px solid var(--bg-gray-700);
   border-style: groove;
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -247,7 +228,7 @@ nav {
 .chain__data_header_l {
   padding: 20px;
   margin-left: 10px;
-  border: 2px solid var(--clr-gray-700);
+  border: 2px solid var(--bg-gray-700);
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   border-style: groove;
@@ -258,7 +239,7 @@ nav {
 .chain__data_header_r {
   padding: 20px;
   margin-right: 10px;
-  border: 2px solid var(--clr-gray-700);
+  border: 2px solid var(--bg-gray-700);
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   border-style: groove;
@@ -282,7 +263,7 @@ nav {
   width: 96%;
   padding: 10px;
   margin: 10px;
-  border: 2px solid var(--clr-gray-700);
+  border: 2px solid var(--bg-gray-700);
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   border-style: groove;
@@ -293,7 +274,7 @@ nav {
 
 .chain__data_r {
   height: 90%;
-  border: 2px solid var(--clr-gray-700);
+  border: 2px solid var(--bg-gray-700);
   border-radius: 0.375rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   border-style: groove;
@@ -328,46 +309,56 @@ nav {
 
 .chain__data_l ul {
   background-color: cornflowerblue;
-  padding: 0px;
-  margin: 8px 0px;
+  border: 2px solid var(--clr-black);
+  border-radius: 0.5rem; /*rounded-md*/
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin: 10px 0px;
+  font-size: 1rem;
+  white-space: nowrap;
   overflow: hidden;
-/*  text-overflow: ellipsis;*/
+  text-overflow: ellipsis;
 }
 
 .chain__data_l li {
+  color: var(--clr-black);
   display: flex;
   text-align: left;
   align-items: left;
+  font: bold;
 }
 /* ------------------------------------------------------ */
 /*LATEST-BLOCKS COMPONENT*/
 .latestblocks {
   cursor: pointer;
-  padding-left: 5px;
   color: #1E90FF; /* sky blue */
   font-weight: bold;
+  margin: 8px;
   padding-top: 2px;
   padding-bottom: 2px;
+  padding-left: 5px;
   gap: 2em;
   font-size: 1rem;
-  margin-left: 1.25rem; /* equivalent to 5px multiplied by the default font size */
-  margin-right: 1.25rem; /* equivalent to 5px multiplied by the default font size */
+  margin-left: 1.25rem; /* 5px multiplied to default font size */
+  margin-right: 1.25rem;
 }
 .latestblocks_border{
-  border-bottom: 1px solid black;
+  border: 2px solid var(--clr-black);
+  background-color: cornflowerblue;
+  border-radius: 0.5rem; /*rounded-md*/
+  gap: 2em;
 }
 
 .latestblocks_main {
-  background-color: cornflowerblue;
-/*  #D1D5DB; gray-300 */
   font-weight: bold;
-  border-radius: 0.375rem; /* equivalent to rounded-md */
+  border-radius: 0.5rem; /*rounded-md*/
+  gap: 2em;
 }
 
 .latestblocks_label {
   display: flex;
   justify-content: flex-start; /* justify-beginning */
-  border-bottom: 2px solid #374151; /* border-b-2 and border-gray-700 */
+  border-bottom: 2px solid #374151; /* border-b-2, border-gray-700 */
   padding-top: 0.5rem;
   padding-left: 0.75rem;
   font-size: 1.25rem; /* text-xl */
@@ -376,12 +367,30 @@ nav {
 /*BLOCKS PAGE*/
 .blocks {
   display: grid;
+  justify-content: left;
+  font-size: 1rem;
+  padding-left: 40px;
+  margin-left: 40px;
+}
+.blocks__main {
+  color: var(--clr-black);
+  display: flex;
+  padding-top: 1rem;
+}
+
+.blocks__content {
+  color: var(--clr-black);
   justify-content: center;
-  font-size: 1.25rem; 
+  text-align: left;
+  margin-left: 40px;
+  padding-left: 40px;
+  border-radius: 0.375rem; /* rounded-md */
+  width: 100%; /* w-full */
 }
 
 .blocks h2{
     color: cornflowerblue;
+    font: bold;
 }
 
 .blocks h3 {
@@ -391,7 +400,7 @@ nav {
 }
 
 .blocks ul{
-    text-align: center;
+    text-align: left;
     position: relative;
     width: 50%;
     left:25%;
@@ -400,16 +409,16 @@ nav {
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0.5rem;
-    border: 2px solid var(--clr-gray-700);
     margin-top: 1rem;
     margin: 10px;
     border-radius: 1rem;
-    background-color: rgb(135, 193, 244,0.85);
+/*    background-color: rgb(135, 193, 244,0.85);*/
 }
 
 /*TRANSACTIONS PAGE*/
 .transaction h2{
     color: cornflowerblue;
+    font: bold;
 }
 
 .transaction__ {
@@ -427,7 +436,7 @@ nav {
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0.5rem;
-    border: 2px solid var(--clr-gray-700);
+    border: 2px solid var(--bg-gray-700);
     margin-top: 1rem;
     border-radius: 1rem;
     background-color: rgb(135, 193, 244,0.85);
@@ -436,6 +445,7 @@ nav {
 /*ADDRESSES PAGE*/
 .address h2{
     color: cornflowerblue;
+    font: bold;
 }
 
 .address .balance {
@@ -453,7 +463,7 @@ nav {
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0.5rem;
-    border: 2px solid var(--clr-gray-700);
+    border: 2px solid var(--bg-gray-700);
     margin-top: 1rem;
     margin: 10px;
 /*    border-width: 3px;*/
@@ -462,9 +472,18 @@ nav {
     background-color: rgb(135, 193, 244,0.85);
 }
 
+/*ERROR PAGE (404)*/
+.errorpage {
+  display: flex; 
+  height: 100vh;
+  align-items: center; 
+  justify-content: center; 
+  font-size: 1.5rem; /* text-2xl */
+}
 
 .footer {
   color: var(--clr-almost-black);
+  font: bold;
   position: fixed;
   bottom: 0;
   left: 0;
