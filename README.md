@@ -1,5 +1,28 @@
-# DESCRIPTION:
- TO-DO ADD DESCRIPTION
+# Project Description:
+ 
+## Blockexplorer Dapp
+
+Blockexplorer Dapp (decentralised app): Alchemy University Ethereum bootcamp Project
+
+This project is aimed at building a simple blockchain explorer to retrieve on-chain data using Alchemy SDK functionalities and APIs. D-App connects to Ethereum blockchain for on-chain data retrieval and uses a React frontend.
+
+### Features:
+
+- Uses multiple APIs for blockchain data retrieval (Alchemy SDK, Ethereum API endpoints & token price APIs). 
+
+- Uses React Components and Pages for separation of concern and build cleaner code.
+
+- App has extensive usage of UseState, UseEffect & UseParams React state hooks.
+
+- React Router and Link usage for faster page navigation and redirects.
+
+- Asynchronous function calls with JavaScript promises and Async/Await implementation. 
+
+- App retrieves block, transaction & address data on Ethereum blockchain using alchemy SDK.
+
+- Navigation bar to show currently connected network and ether price (in USD).
+
+- Search bar for lookup using wallet address or transaction id (hash).
 
 # Ethereum Block Explorer
 
